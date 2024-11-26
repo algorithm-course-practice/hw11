@@ -37,13 +37,13 @@ public class HomeWork {
         List<Integer> secondLine = Arrays.stream(inList.get(1).split(" "))
                 .map(e -> Integer.parseInt(e))
                 .collect(Collectors.toList());
-//        List<Boolean> steps = new ArrayList<>();
-        // заполняем хореографию L (false)
+        // создаем и заполняем хореографию L (false)
         boolean[] steps = new boolean[n];
         // начальная длина хореографии
         int maxNumber = 1;
         int maxNumberIndex = 1;
         List<Integer> result = new ArrayList<>();
+        // импровизация танцоров
         for (int i = 1; i <= q; i++){
             int stepNumber = 1;
             int stepNumberIndex = 1;
@@ -54,8 +54,8 @@ public class HomeWork {
             }  else {
                 steps[r] = false;
             }
-            // добавляем  j элемент и смотрим длину вокруг этого элемента. Если больше, то обновляем макс
-            //смотрим вверх
+            // меняем  r элемент и смотрим длину вокруг этого элемента. Если больше, то обновляем макс
+            // 1) идем вверх по индексу пока не кончится последовательность
             for (int j = r; j < n && j > 0; j++){
                 if (steps[j] != steps[j - 1]){
                     stepNumber += 1;
@@ -64,40 +64,53 @@ public class HomeWork {
                     break;
                 }
             }
-            // 2 раз сравнение с предыдущим поэтому -1
-            stepNumber -= 1;
-            //смотрим вниз
-            for (int j = r; j > 0 && j < n; j--){
+            //2) идем вниз по индексу пока не кончится последовательность
+            for (int j = r - 1; j > 0 && j < n - 1; j--){
                 if (steps[j] != steps[j - 1]){
                     stepNumber += 1;
                 }
                 else {
-                    stepNumberIndex = j + 1;
+                    stepNumberIndex = j;
                     break;
                 }
             }
-            // заново просчитать предыдущий макс если мы его затронули
-            maxNumber = 1;
-            for (int j = maxNumberIndex; j < n && j > 0; j++){
-                if (steps[j] != steps[j - 1]){
-                    maxNumber += 1;
-                }
-                else {
-                    break;
+            // если новый индекс входит в диапозон [maxNumberIndex, maxNumberIndex + maxNumber]
+            if (maxNumberIndex <= r && r <= maxNumberIndex + Math.max(maxNumber, stepNumber)) {
+                if (stepNumber > maxNumber) {
+                    // нашли больше длину на этом участке и поэтому обновляем максимум
+                    maxNumber = stepNumber;
+                    maxNumberIndex = stepNumberIndex;
+                } else {
+                    // вставка испортила диапозон maxNumber и поэтому сканируем весь диапозон заново
+                    // начальное значение для макса из диапозона maxNumberIndex (для оптимизации)
+                    maxNumber = stepNumber;
+                    maxNumberIndex = stepNumberIndex;
+                    stepNumber = 1;
+                    // уменьшаем индекс чтобы найти начало диапозона
+                    for (int j = n - 1; j > 0; j--) {
+                        if (steps[j] != steps[j - 1]) {
+                            stepNumber += 1;
+                        } else {
+                            if (stepNumber > maxNumber) {
+                                maxNumber = stepNumber;
+                                maxNumberIndex = j;
+                            }
+                            stepNumber = 1;
+                        }
+                    }
                 }
             }
-
-            if (stepNumber > maxNumber){
-                maxNumber = stepNumber;
-                maxNumberIndex = stepNumberIndex;
+            else {
+                if (stepNumber > maxNumber) {
+                    // нашли больше длину на этом участке и поэтому обновляем максимум
+                    maxNumber = stepNumber;
+                    maxNumberIndex = stepNumberIndex;
+                }
             }
             result.add(maxNumber);
         }
-        String resultString = result.stream().map(String::valueOf).collect(Collectors.joining("\n"));
+        String resultString = result.stream().map(String::valueOf).collect(Collectors.joining("\n")) + "\n";
         byte[] bytes = resultString.getBytes(StandardCharsets.UTF_8);
         out.write(bytes);
     }
-
-
-
 }
