@@ -49,15 +49,11 @@ public class HomeWork {
             int stepNumberIndex = 1;
             int r = Integer.parseInt(inList.get(i)) - 1;
             // меняем на противоположное значение
-            if (steps[r] == false) {
-                steps[r] = true;
-            }  else {
-                steps[r] = false;
-            }
+                steps[r] = !steps[r];
             // меняем  r элемент и смотрим длину вокруг этого элемента. Если больше, то обновляем макс
             // 1) идем вверх по индексу пока не кончится последовательность
-            for (int j = r; j < n && j > 0; j++){
-                if (steps[j] != steps[j - 1]){
+            for (int j = r; j < n  - 1 && j > 0; j++){
+                if (steps[j] != steps[j +1]){
                     stepNumber += 1;
                 }
                 else {
@@ -65,7 +61,7 @@ public class HomeWork {
                 }
             }
             //2) идем вниз по индексу пока не кончится последовательность
-            for (int j = r - 1; j > 0 && j < n - 1; j--){
+            for (int j = r; j > 0 && j < n - 1; j--){
                 if (steps[j] != steps[j - 1]){
                     stepNumber += 1;
                 }
@@ -97,6 +93,9 @@ public class HomeWork {
                             }
                             stepNumber = 1;
                         }
+                    }
+                    if (stepNumber > maxNumber) {
+                        maxNumber = stepNumber;
                     }
                 }
             }
