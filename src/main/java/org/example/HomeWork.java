@@ -28,7 +28,9 @@ public class HomeWork {
 
         if (DIRTY_ALGORITHM) {
             dirtyAlgorithm(N, Q, scanner, result);
-        } else avlTreeAlgorithm(N, Q, scanner, result);
+        } else {
+            avlTreeAlgorithm(N, Q, scanner, result);
+        }
 
         // Записываем результат
         out.write(result.toString().getBytes());
